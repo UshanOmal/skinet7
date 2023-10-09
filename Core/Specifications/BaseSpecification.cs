@@ -6,7 +6,6 @@ namespace Core.Specifications
     {
         public BaseSpecification()
         {
-            
         }
         public BaseSpecification(Expression<Func<T,bool>> criteria)
         {
@@ -18,10 +17,34 @@ namespace Core.Specifications
         public List<Expression<Func<T, object>>> Includes {get; } = 
         new List<Expression<Func<T,object>>>();
 
+        public Expression<Func<T, object>> OrderBy {get; private set;}
+
+        public Expression<Func<T, object>> OrderByDesending {get; private set;}
+
+        public int Take {get; private set;}
+
+        public int Skip {get; private set;}
+
+        public bool IsPagingEnabled {get; private set;}
+
         protected void AddInclude(Expression<Func<T,object>> includeExperssion)
         {
             Includes.Add(includeExperssion);
         }
+        protected void AdddOrderBy(Expression<Func<T,object>> orderByExpression)
+        {
+            OrderBy = orderByExpression;
+        }
+        protected void AdddOrderByDesending(Expression<Func<T,object>> orderByDesExpression)
+        {
+            OrderByDesending = orderByDesExpression;
+        }
 
+        protected void ApplyPaging (int skip, int take)
+        {
+            Skip = skip;
+            Take = take;
+            IsPagingEnabled = true;
+        }
     }
 }
