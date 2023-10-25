@@ -10,6 +10,8 @@ import { ShopModule } from './shop/shop.module';
 import { HomeComponent } from './home/home.component';
 import { HomeModule } from './home/home.module';
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';
+import { LoadingInterceptor } from './core/interceptors/loading.interceptor';
+import { CarouselModule } from 'ngx-bootstrap/carousel';
 
 @NgModule({
   declarations: [
@@ -21,10 +23,12 @@ import { ErrorInterceptor } from './core/interceptors/error.interceptor';
     BrowserAnimationsModule,
     HttpClientModule,
     CoreModule,
-    HomeModule
+    HomeModule,
+    CarouselModule.forRoot()
   ],
   providers: [
-    {provide : HTTP_INTERCEPTORS, useClass:ErrorInterceptor, multi:true}
+    {provide : HTTP_INTERCEPTORS, useClass:ErrorInterceptor, multi:true},
+    {provide : HTTP_INTERCEPTORS, useClass:LoadingInterceptor, multi:true}
   ],
   bootstrap: [AppComponent]
 })
