@@ -1,4 +1,3 @@
-using skinet;
 
 namespace Core.Entities
 {
