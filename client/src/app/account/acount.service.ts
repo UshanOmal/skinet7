@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ReplaySubject, map, of } from 'rxjs';
 import { environment } from 'src/environments/environmnet';
-import { User } from '../shared/models/user';
+import { Address, User } from '../shared/models/user';
 import { HttpClient, HttpHandler, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 
@@ -22,7 +22,7 @@ export class AcountService {
     }
 
     let headers = new HttpHeaders();
-    headers = headers.set('Authorization', 'Bearer ${token}');
+    headers = headers.set('Authorization', `Bearer ${token}`);
 
     return this.http.get<User>(this.baseUrl + 'account', {headers}).pipe(
       map(user => {
@@ -64,6 +64,14 @@ export class AcountService {
 
   checkEailExists(email: string){
     return this.http.get<boolean>(this.baseUrl +'account/emailExists?email='+email);
+  }
+
+  getUserAddress(){
+    return this.http.get<Address>(this.baseUrl + 'account/address');
+  }
+
+  updateUserAddress(address: Address){
+    return this.http.put(this.baseUrl + 'account/address' , address);
   }
 
 }
