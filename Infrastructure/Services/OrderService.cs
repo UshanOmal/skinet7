@@ -28,14 +28,26 @@ public class OrderService : IOrderService
         var deilveryMethod = await _unitOfWork.Repository<DeliveryMethod>().GetByIdAsync(deliveryMethodId);
         var subtotal = items.Sum(items => items.Price * items.Quantity);
 
-        var order = new Order(items, buyerEmail, shippingAddress, deilveryMethod, subtotal);
-        _unitOfWork.Repository<Order>().Add(order);
+        //check to see if order exists
+        var spec = new OrderByPaymentIntententIdSpecification(basket.PaymentIntentId);
+        var order = await _unitOfWork.Repository<Order>().GetEntityWithSpec(spec);
+
+        if (order != null)
+        {
+            order.ShipToAddress = shippingAddress;
+            order.DeliveryMethod = deilveryMethod;
+            order.Subtotal = subtotal;
+            _unitOfWork.Repository<Order>().Update(order);
+        }
+        else
+        {
+            order = new Order(items, buyerEmail, shippingAddress, deilveryMethod, subtotal, basket.PaymentIntentId);
+            _unitOfWork.Repository<Order>().Add(order);
+        }
 
         var result = await _unitOfWork.Complete();
 
-        if(result <= 0) return null;
-
-        await _basketRepostory.DeleteBasketAsync(basketId);
+        if (result <= 0) return null;
 
         return order;
     }
